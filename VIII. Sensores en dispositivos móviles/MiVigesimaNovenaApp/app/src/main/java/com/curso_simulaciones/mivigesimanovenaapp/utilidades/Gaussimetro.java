@@ -85,6 +85,7 @@ public class Gaussimetro extends GaugeSimple implements SensorEventListener {
         //dos decimales
         medida = (float) (Math.round(medida * 100) / 100.0f);
         this.setMedida(medida);
+        cambiarEscala(medida);
 
         //almacenar dato actual
         AlmacenDatosRAM.datoActual = medida;
@@ -93,6 +94,54 @@ public class Gaussimetro extends GaugeSimple implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
+    /*
+    Bx, By y Bz pueden ser negativas (rango simétrico -maximo..maximo);
+    B (magnitud) siempre es positiva (rango 0..maximo)
+    */
+    private void cambiarEscala(float medida) {
+
+        float valorAbsoluto = Math.abs(medida);
+        float maximo;
+
+        if (valorAbsoluto <= 100f) {
+
+            maximo = 100f;
+
+        } else if (valorAbsoluto <= 200f) {
+
+            maximo = 200f;
+
+        } else if (valorAbsoluto <= 500f) {
+
+            maximo = 500f;
+
+        } else if (valorAbsoluto <= 1000f) {
+
+            maximo = 1000f;
+
+        } else if (valorAbsoluto <= 5000f) {
+
+            maximo = 5000f;
+
+        } else {
+
+            maximo = 10000f;
+
+        }
+
+        if (componenteGaussimetro == 4) {
+
+            this.setRango(0f, maximo);
+
+        } else {
+
+            this.setRango(-maximo, maximo);
+
+        }
 
     }
 
