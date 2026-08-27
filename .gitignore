@@ -1,0 +1,23 @@
+# Android / Gradle (generado, no se versiona)
+*.iml
+.gradle/
+.idea/
+build/
+captures/
+.cxx/
+.externalNativeBuild/
+local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+*.hprof
+.DS_Store
+
+# Material teórico del curso (PDF/Word) — no se versiona por decisión del estudiante
+*.pdf
+*.docx
+*.doc
+~$*.docx
+~$*.doc

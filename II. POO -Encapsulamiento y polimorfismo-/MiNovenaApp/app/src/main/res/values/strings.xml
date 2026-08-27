@@ -1,0 +1,4 @@
+<resources>
+    <!-- Nombre mostrado debajo del icono de la aplicación. -->
+    <string name="app_name">MiNovenaApp</string>
+</resources>

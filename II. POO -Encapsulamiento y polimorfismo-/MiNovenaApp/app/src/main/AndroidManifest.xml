@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Registra componentes y propiedades generales de la aplicación. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:theme="@style/Theme.MiNovenaApp" android:label="@string/app_name">
+        <!-- Actividad que Android abre al seleccionar el icono de la aplicación. -->
+        <activity android:name=".ActividadPrincipalMiNovenaApp" android:screenOrientation="landscape" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
