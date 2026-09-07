@@ -18,7 +18,7 @@ int resolucion = 8;
 // conectado el celular, para confirmar a simple vista que el firmware sigue
 // corriendo.
 int pinVerificacion = 1;
-unsigned long periodoParpadeoMs = 500;
+unsigned long periodoParpadeoMs = 1000; // 1000 ms: identifica esta placa (MiTrigesimaSeptimaApp) frente a la de Octava (500 ms) y Novena (250 ms)
 
 // Esta clase es un "Callback". Se dispara automáticamente en segundo plano
 // cada vez que tu celular escribe un dato en la Característica BLE.

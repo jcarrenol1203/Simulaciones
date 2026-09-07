@@ -1,4 +1,4 @@
-package com.curso_simulaciones.mitrigesimaseptimaapp.actividades_secundarias;
+package com.curso_simulaciones.mitrigesimaoctavaapp.actividades_secundarias;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -19,7 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.curso_simulaciones.mitrigesimaseptimaapp.datos.AlmacenDatosRAM;
+import com.curso_simulaciones.mitrigesimaoctavaapp.datos.AlmacenDatosRAM;
 
 import java.util.ArrayList;
 import java.util.List;

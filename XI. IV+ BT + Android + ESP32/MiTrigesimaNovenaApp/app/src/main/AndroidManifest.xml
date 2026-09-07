@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.curso_simulaciones.mitrigesimanovenaapp">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MiTrigesimaNovenaApp"
+        tools:targetApi="31" >
+
+        <activity android:name=".ActividadPrincipalMiTrigesimaNovenaApp"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <!--declarando otra actividad-->
+        <activity
+            android:name=".actividades_secundarias.ActividadEscaneoDispositivos"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+
+        <!--declarando otra actividad-->
+        <activity
+            android:name=".actividades_secundarias.ActividadComoClienteBluetooth"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+
+
+
+
+        <!--declarando otra actividad-->
+        <activity
+            android:name=".actividades_secundarias.ActividadConfiguracion"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
+
+    </application>
+
+
+    <!-- Permisos adicionales para usar bluetooth antes de Android 12 ).-->
+    <uses-permission android:name="android.permission.BLUETOOTH"  tools:remove="android:maxSdkVersion" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <!-- Permisos adicionales para usar bluetooth a partir de Android 12.-->
+    <!-- neverForLocation: nuestro escaneo BLE solo busca el ESP32 por servicio,
+         nunca se usa para calcular ubicación. Sin este flag Android exige ademas
+         ACCESS_FINE_LOCATION para entregar resultados de escaneo, y los descarta
+         en silencio si falta, sin error visible (mismo caso de MiTrigesimaSeptimaApp). -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+
+</manifest>

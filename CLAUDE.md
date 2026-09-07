@@ -37,15 +37,33 @@ Android/Gradle (Java, sin layouts XML — la UI se arma en código):
   `BluetoothServerSocket`) entre dos dispositivos Android, usando la librería propia
   `comunicaciones.aar` (en `app/libs/`) para el escaneo/emparejamiento de dispositivos
   (`ScannerBluetooth`).
-- `XI. IV+ BT + Android + ESP32/` — MiTrigesimaSeptimaApp… (módulo 14), teórico en
-  `modulo_14.docx`. Patrón cliente-servidor por **BLE** entre un Android (cliente) y una
-  placa **ESP32-S3** (servidor): servicios/características GATT con UUID propios,
-  `BluetoothGatt`/`BluetoothGattCallback` en el lado Android, y firmware en C++/Arduino
-  (`BLEDevice`, `BLEServer`, `ArduinoJson`) en el lado ESP32. El estudiante usa **Arduino
-  IDE** para programar la ESP32-S3 (el sketch `.ino` vive en la raíz de su carpeta, mismo
-  nombre que la carpeta, como exige Arduino IDE). El proyecto también tiene un scaffold de
-  PlatformIO (`platformio.ini`, carpeta `src/`) dentro de `esp32-firmware/`, pero no es el
-  que se usa para compilar/subir — solo Arduino IDE. **Enfoque actual**.
+- `XI. IV+ BT + Android + ESP32/` — MiTrigesimaSeptimaApp, MiTrigesimaOctavaApp,
+  MiTrigesimaNovenaApp (módulo 14), teórico en `modulo_14.docx`. Tiene su propio `CLAUDE.md`
+  con el resumen técnico de las 3 apps. Patrón cliente-servidor por
+  **BLE** entre un Android (cliente) y una placa **ESP32-S3** (servidor): servicios/
+  características GATT con UUID propios, `BluetoothGatt`/`BluetoothGattCallback` en el lado
+  Android, y firmware en C++/Arduino (`BLEDevice`, `BLEServer`, `ArduinoJson`) en el lado
+  ESP32. El estudiante usa **Arduino IDE** para programar la ESP32-S3 (el sketch `.ino` vive
+  en la raíz de su carpeta, mismo nombre que la carpeta, como exige Arduino IDE). El proyecto
+  también tiene un scaffold de PlatformIO (`platformio.ini`, carpeta `src/`) dentro de
+  `esp32-firmware/`, pero no es el que se usa para compilar/subir — solo Arduino IDE.
+  MiTrigesimaOctavaApp (sensor GY-30/BH1750 de iluminancia vía I2C) reutiliza el mismo
+  montaje físico que MiTrigesimaSeptimaApp (LED RGB en GPIO 11/12/13, blink de verificación
+  en GPIO 1) — la guía usa `Wire.begin(11, 12)`, pero esos pines ya están ocupados por el
+  RGB, así que ahí el I2C se reasigna a **GPIO 8 (SDA) y GPIO 9 (SCL)** (los pines por
+  defecto de la placa `esp32-s3-devkitc-1` según su `pins_arduino.h` del core arduino-esp32),
+  sin necesidad de recablear nada. MiTrigesimaNovenaApp es la tercera app de la guía: sensor
+  ultrasónico **HC-SR04** (distancia a obstáculos, `trigPin=15`/`echoPin=16`) más el mismo LED
+  RGB de MiTrigesimaSeptimaApp (GPIO 11/12/13) — a diferencia de las otras dos, aquí la
+  comunicación BLE es **bidireccional**: el ESP32 notifica la distancia (característica TX,
+  UUID propio `71850116-...`) y el Android escribe de vuelta un color RGB según rangos de
+  distancia (característica RX, `beb5483e-...`, la misma que Séptima/Octava usaban para su
+  único propósito). Clase nueva `Distanciometro` (extiende `GaugeSimple`, con
+  `cambiarEscala()` reescalando el rango del gauge según la magnitud medida). Con las 3
+  placas del salón corriendo a la vez, el blink de verificación en GPIO 1 usa un período
+  distinto por app para identificar cuál firmware está corriendo con solo mirar el LED:
+  **Séptima = 1000 ms, Octava = 500 ms, Novena = 250 ms** (este blink es una adición nuestra
+  para depuración, no está en la guía). **Enfoque actual**.
 
 Dentro de cada módulo, la dinámica es: las **actividades** se resuelven copiando/adaptando
 apps anteriores paso a paso siguiendo el módulo; las **tareas** son un reto adicional a partir
@@ -104,6 +122,11 @@ terminal para que él los corra (típicamente `git add <rutas>`, `git commit -m 
   abstractos obligatorios, herencia simple; interfaz = contrato puro sin estado, una clase
   puede implementar varias a la vez; ejemplo real ya en código: `ActividadPrincipal...
   implements Runnable`, usado por `Thread`)
+- I2C con sensores digitales en ESP32 (`Wire.begin(sda, scl)`, librerías de sensor tipo
+  `BH1750.h`): en el ESP32/ESP32-S3 el periférico I2C no está atado a pines fijos de
+  hardware (usa el GPIO matrix), así que SDA/SCL se pueden reasignar a cualquier GPIO libre
+  sin problema — ejemplo real: MiTrigesimaOctavaApp usa GPIO 8/9 en vez de los 11/12 de la
+  guía, para no chocar con el LED RGB ya cableado en la misma placa (módulo XI)
 
 ### Pendiente / en construcción
 - Sobreescritura de métodos (`@Override`) vs sobrecarga (explicado con ejemplos — falta
