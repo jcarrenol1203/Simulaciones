@@ -27,7 +27,25 @@ Android/Gradle (Java, sin layouts XML — la UI se arma en código):
 - `VIII. Sensores en dispositivos móviles/` — MiVigesimaSextaApp… (módulo 11), teórico en
   `modulo_11.docx`. Uso de `SensorManager`/`Sensor` para detectar y leer sensores del
   dispositivo (acelerómetro, giroscopio, gravedad, temperatura ambiente, luz, campo
-  magnético, presión, proximidad, humedad relativa, etc.). **Enfoque actual**.
+  magnético, presión, proximidad, humedad relativa, etc.).
+- `IX. Flujo de Datos/` — MiTrigesimaApp… (módulo 12), teórico en `modulo_12.docx`. Flujos
+  (streams) de E/S en Java (`InputStream`/`OutputStream` de bytes, `Reader`/`Writer` de
+  caracteres), lectura/escritura de archivos en almacenamiento interno y externo de Android
+  (Scoped Storage desde Android 10/11), serialización.
+- `X. IV + BT + Android/` — MiTrigesimaQuintaApp, MiTrigesimaSextaApp (módulo 13), teórico en
+  `modulo_13.docx`. Comunicación cliente-servidor por Bluetooth clásico (`BluetoothSocket`,
+  `BluetoothServerSocket`) entre dos dispositivos Android, usando la librería propia
+  `comunicaciones.aar` (en `app/libs/`) para el escaneo/emparejamiento de dispositivos
+  (`ScannerBluetooth`).
+- `XI. IV+ BT + Android + ESP32/` — MiTrigesimaSeptimaApp… (módulo 14), teórico en
+  `modulo_14.docx`. Patrón cliente-servidor por **BLE** entre un Android (cliente) y una
+  placa **ESP32-S3** (servidor): servicios/características GATT con UUID propios,
+  `BluetoothGatt`/`BluetoothGattCallback` en el lado Android, y firmware en C++/Arduino
+  (`BLEDevice`, `BLEServer`, `ArduinoJson`) en el lado ESP32. El estudiante usa **Arduino
+  IDE** para programar la ESP32-S3 (el sketch `.ino` vive en la raíz de su carpeta, mismo
+  nombre que la carpeta, como exige Arduino IDE). El proyecto también tiene un scaffold de
+  PlatformIO (`platformio.ini`, carpeta `src/`) dentro de `esp32-firmware/`, pero no es el
+  que se usa para compilar/subir — solo Arduino IDE. **Enfoque actual**.
 
 Dentro de cada módulo, la dinámica es: las **actividades** se resuelven copiando/adaptando
 apps anteriores paso a paso siguiendo el módulo; las **tareas** son un reto adicional a partir
@@ -49,6 +67,17 @@ clase abstracta, etc.), salvo que el punto ya esté marcado como "Dominada" abaj
 Cuando el estudiante diga "ya domino X", mover ese punto de "Pendiente" a "Dominada" en este
 archivo (y dejar de explicarlo de más, salvo que pida repaso explícito). Si aparece un
 concepto nuevo en una actividad, agregarlo a "Pendiente".
+
+### Flujo de git al terminar una app
+
+Repo ya inicializado y en GitHub: https://github.com/jcarrenol1203/Simulaciones (privado),
+rama `main`, remoto `origin` configurado — no hace falta `git init` ni `gh repo create` de
+nuevo. Cuando el estudiante dé por terminada y aprobada una app (actividad o tarea), el
+siguiente paso es subirla a git y luego a GitHub, pero el estudiante quiere teclear los
+comandos él mismo para practicar — **no ejecutar `git add`/`commit`/`push` en su lugar**. En
+vez de eso, al final de la sesión de esa app, darle el paso a paso exacto de comandos de
+terminal para que él los corra (típicamente `git add <rutas>`, `git commit -m "..."`,
+`git push`), con una breve nota de qué hace cada uno.
 
 ## Seguimiento de teoría (global, válido para todos los módulos)
 
@@ -92,6 +121,21 @@ concepto nuevo en una actividad, agregarlo a "Pendiente".
 - API de sensores (`SensorManager`, `Sensor`, `getDefaultSensor(tipo)`): consulta de
   sensores disponibles y sus propiedades (nombre, vendedor, rango, resolución, delay);
   variantes wake-up/non-wakeup de un mismo sensor físico — módulo VIII
+- Flujos de datos (streams) en Java (`java.io`): jerarquía de bytes (`InputStream`/
+  `OutputStream`) vs. caracteres (`Reader`/`Writer`), filtros que se anidan sobre un canal
+  base (`BufferedReader`, `OutputStreamWriter`/`InputStreamReader` para pasar de bytes a
+  caracteres), los 4 pasos crear/abrir/leer-o-escribir/cerrar canal, y por qué `flush()`
+  antes de `close()` — módulo IX
+- Almacenamiento interno vs. externo en Android (`openFileOutput`/`openFileInput` vs.
+  `File`+`FileOutputStream`/`FileInputStream`), y Scoped Storage desde Android 10/11
+  (`getExternalFilesDir(null)` como carpeta propia de la app sin permisos runtime, en vez
+  de `Environment.getExternalStorageDirectory()`) — módulo IX
+- Comunicación cliente-servidor por Bluetooth clásico (`BluetoothSocket`, flujos de
+  entrada/salida sobre el socket RFCOMM) — módulo X
+- Comunicación cliente-servidor por BLE Android↔ESP32 (`BluetoothGatt`,
+  `BluetoothGattCallback`, servicios/características GATT identificados por UUID,
+  naturaleza asíncrona de la conexión BLE vs. el socket bloqueante del Bluetooth clásico) —
+  módulo XI
 
 ## Agentes/skills preferidos (plugin ECC)
 
@@ -109,8 +153,9 @@ Este repo tiene instalado globalmente el plugin ECC (marketplace, no por-proyect
 El resto queda en "biblioteca" (disponible pero no se carga por defecto): todo lo de
 Kotlin/React/Django/Spring/bases de datos/seguridad/etc. no tiene evidencia en este repo.
 Reevaluar cuando: (a) empiece código real de ESP32 (agentes de C++/Arduino), (b) empiece el
-módulo de Deep Learning (agentes de PyTorch/MLE), o (c) se inicialice git (agentes de
-git-workflow/PR/code-review basados en diff).
+módulo de Deep Learning (agentes de PyTorch/MLE). Git ya está inicializado (ver "Flujo de git
+al terminar una app" arriba), pero el estudiante ejecuta los comandos él mismo, así que
+git-workflow/PR/code-review (basados en diff) siguen sin uso proactivo de mi parte.
 
 ## Entorno técnico
 
