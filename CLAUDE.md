@@ -73,7 +73,10 @@ Android/Gradle (Java, sin layouts XML — la UI se arma en código):
   `AlarmReceiver`). El Android publica un JSON `{r,g,b}` en un tópico y la ESP32-S3
   (`PubSubClient.h` + `ArduinoJson.h` en Arduino IDE, broker compartido por el curso) lo
   suscribe y controla un LED RGB — mismo montaje de GPIO 11/12/13 + blink de verificación en
-  GPIO 1 que en el módulo XI. **Enfoque actual**.
+  GPIO 1 que en el módulo XI. MiCuadragesimaCuartaApp es la segunda app: ahora la ESP32-S3
+  PUBLICA (sensor de iluminancia GY-30/BH1750 por I2C) y el Android se suscribe y despliega la
+  medida en gauge/tabla/gráfica (`Luxometro`/`Graficador`/`TablaSimple`, reutilizadas tal cual
+  del módulo XI — MPAndroidChart vía JitPack). **Enfoque actual**.
 
 Dentro de cada módulo, la dinámica es: las **actividades** se resuelven copiando/adaptando
 apps anteriores paso a paso siguiendo el módulo; las **tareas** son un reto adicional a partir

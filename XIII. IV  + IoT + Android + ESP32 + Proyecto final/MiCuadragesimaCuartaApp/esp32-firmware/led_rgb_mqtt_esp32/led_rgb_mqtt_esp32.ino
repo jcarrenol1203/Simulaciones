@@ -8,7 +8,9 @@ const int pinVerde = 12;
 const int pinRojo = 13;
 
 int pinVerificacion = 1;
-unsigned long periodoParpadeoMs = 1000; 
+unsigned long periodoParpadeoMs = 1000;
+unsigned long tiempoAnteriorParpadeo = 0;
+bool estadoParpadeo = false;
 
 // --- 2. Credenciales de Red y Servidor ---
 const char* ssid = "Londonos_2.4";
@@ -109,7 +111,7 @@ void setup() {
 
     // LED de verificación
   pinMode(pinVerificacion, OUTPUT);
-  digitalWrite(pinVerificacion, LOW);er
+  digitalWrite(pinVerificacion, LOW);
 
   // Configuración de pines (o usa ledcSetup/ledcAttachPin si usas el core viejo)
   pinMode(pinRojo, OUTPUT);
@@ -127,14 +129,19 @@ void setup() {
 // --- 8. Bucle Principal ---
 void loop() {
 
-    digitalWrite(pinVerificacion, HIGH);
-  delay(periodoParpadeoMs);
-  digitalWrite(pinVerificacion, LOW);
-  delay(periodoParpadeoMs);
+  // Blink no bloqueante: alterna el pin de verificación sin usar delay(),
+  // así mqttCliente.loop() se sigue llamando en cada vuelta del loop().
+  unsigned long ahora = millis();
+  if (ahora - tiempoAnteriorParpadeo >= periodoParpadeoMs) {
+    tiempoAnteriorParpadeo = ahora;
+    estadoParpadeo = !estadoParpadeo;
+    digitalWrite(pinVerificacion, estadoParpadeo ? HIGH : LOW);
+  }
+
   if (!mqttCliente.connected()) {
     reconnect();
   }
-  
+
   // Mantiene vivo el protocolo MQTT
   mqttCliente.loop();
 
