@@ -63,7 +63,17 @@ Android/Gradle (Java, sin layouts XML — la UI se arma en código):
   placas del salón corriendo a la vez, el blink de verificación en GPIO 1 usa un período
   distinto por app para identificar cuál firmware está corriendo con solo mirar el LED:
   **Séptima = 1000 ms, Octava = 500 ms, Novena = 250 ms** (este blink es una adición nuestra
-  para depuración, no está en la guía). **Enfoque actual**.
+  para depuración, no está en la guía).
+- `XIII. IV + IoT + Android + ESP32 + Proyecto final/` — MiCuadragesimaTerceraApp (módulo 16),
+  teórico en `modulo_16.docx`. Tiene su propio `CLAUDE.md` con el resumen técnico. Primera app
+  de un patrón nuevo (publicador-suscriptor) sobre **MQTT** entre Android y ESP32-S3, en vez
+  de BLE: mismo fork de Paho que en `X. IV + BT + Android/` para el lado Bluetooth
+  (`com.github.hannesa2:...`, ahora `paho.mqtt.android:3.3.5` vía JitPack) pero usando
+  directamente `MqttAsyncClient` (no `MqttAndroidClient`, deprecado desde Android 12 por su
+  `AlarmReceiver`). El Android publica un JSON `{r,g,b}` en un tópico y la ESP32-S3
+  (`PubSubClient.h` + `ArduinoJson.h` en Arduino IDE, broker compartido por el curso) lo
+  suscribe y controla un LED RGB — mismo montaje de GPIO 11/12/13 + blink de verificación en
+  GPIO 1 que en el módulo XI. **Enfoque actual**.
 
 Dentro de cada módulo, la dinámica es: las **actividades** se resuelven copiando/adaptando
 apps anteriores paso a paso siguiendo el módulo; las **tareas** son un reto adicional a partir
@@ -159,6 +169,13 @@ terminal para que él los corra (típicamente `git add <rutas>`, `git commit -m 
   `BluetoothGattCallback`, servicios/características GATT identificados por UUID,
   naturaleza asíncrona de la conexión BLE vs. el socket bloqueante del Bluetooth clásico) —
   módulo XI
+- Comunicación por MQTT (patrón publicador-suscriptor) Android↔ESP32 (`MqttAsyncClient` de
+  Paho en Android, `PubSubClient` en Arduino; ambos son *clientes* de un mismo *broker* — a
+  diferencia de BLE, donde el ESP32 hacía de servidor directo del Android); diferencias de API
+  entre lados (Paho necesita URI completa `tcp://host:puerto`, PubSubClient recibe host y
+  puerto por separado); `mqttCliente.loop()` debe llamarse en cada vuelta del `loop()` de
+  Arduino sin bloqueos largos (`delay()`) antes, o se atrasan los mensajes entrantes — módulo
+  XIII
 
 ## Agentes/skills preferidos (plugin ECC)
 
