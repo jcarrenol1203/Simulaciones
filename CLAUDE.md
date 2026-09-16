@@ -76,7 +76,13 @@ Android/Gradle (Java, sin layouts XML — la UI se arma en código):
   GPIO 1 que en el módulo XI. MiCuadragesimaCuartaApp es la segunda app: ahora la ESP32-S3
   PUBLICA (sensor de iluminancia GY-30/BH1750 por I2C) y el Android se suscribe y despliega la
   medida en gauge/tabla/gráfica (`Luxometro`/`Graficador`/`TablaSimple`, reutilizadas tal cual
-  del módulo XI — MPAndroidChart vía JitPack). **Enfoque actual**.
+  del módulo XI — MPAndroidChart vía JitPack). MiCuadragesimaQuintaApp es la **tarea** del
+  módulo (no una actividad, sin ejemplo resuelto en el docx): combina DHT11 (temperatura y
+  humedad, GPIO 42) con el HC-SR04 del módulo XI (mismos pines) en un solo JSON publicado por
+  la ESP32-S3, corrigiendo la velocidad del sonido con la temperatura y humedad medidas; el
+  Android despliega los 3 valores en un cluster de gauges superpuestos (una sola clase
+  `Gauge` con `cambiarEscala(medida, umbrales[])` genérico, no 3 subclases). Tiene su resumen
+  técnico completo en el `CLAUDE.md` del módulo. **Enfoque actual**.
 
 Dentro de cada módulo, la dinámica es: las **actividades** se resuelven copiando/adaptando
 apps anteriores paso a paso siguiendo el módulo; las **tareas** son un reto adicional a partir
@@ -140,45 +146,14 @@ terminal para que él los corra (típicamente `git add <rutas>`, `git commit -m 
   hardware (usa el GPIO matrix), así que SDA/SCL se pueden reasignar a cualquier GPIO libre
   sin problema — ejemplo real: MiTrigesimaOctavaApp usa GPIO 8/9 en vez de los 11/12 de la
   guía, para no chocar con el LED RGB ya cableado en la misma placa (módulo XI)
+- DHT11 (protocolo de un solo hilo para humedad/temperatura, timing por duración de pulsos,
+  módulo de 3 pines VCC/GND/DATA sin resistencia externa) — módulo XIII
 
 ### Pendiente / en construcción
-- Sobreescritura de métodos (`@Override`) vs sobrecarga (explicado con ejemplos — falta
-  confirmación explícita)
-- Hilos (`Thread`, `Runnable`) para animación
-- Vistas personalizadas de Android (`View`, `onDraw`, `invalidate()`)
-- Creación y empaquetado de librerías Android en Java: módulo de tipo "Android Library"
-  dentro del proyecto, documentación con javadoc, y consumo del `.jar` compilado
-  (`classes.jar` → renombrado, copiado a `app/libs/`, referenciado con
-  `implementation(files("libs/....jar"))`) desde otro proyecto independiente (módulo VI)
-- Método numérico de Runge-Kutta de orden 2 para resolver EDOs de segundo orden
-  (`RungeKuttaOrdenDos`: clase abstracta reutilizable que resuelve cualquier ecuación
-  `d²x/dt² = f(x,v,t)` con solo implementar el método abstracto `f`; separa el algoritmo
-  numérico del problema físico concreto — módulo VI)
-- API de sensores (`SensorManager`, `Sensor`, `getDefaultSensor(tipo)`): consulta de
-  sensores disponibles y sus propiedades (nombre, vendedor, rango, resolución, delay);
-  variantes wake-up/non-wakeup de un mismo sensor físico — módulo VIII
-- Flujos de datos (streams) en Java (`java.io`): jerarquía de bytes (`InputStream`/
-  `OutputStream`) vs. caracteres (`Reader`/`Writer`), filtros que se anidan sobre un canal
-  base (`BufferedReader`, `OutputStreamWriter`/`InputStreamReader` para pasar de bytes a
-  caracteres), los 4 pasos crear/abrir/leer-o-escribir/cerrar canal, y por qué `flush()`
-  antes de `close()` — módulo IX
-- Almacenamiento interno vs. externo en Android (`openFileOutput`/`openFileInput` vs.
-  `File`+`FileOutputStream`/`FileInputStream`), y Scoped Storage desde Android 10/11
-  (`getExternalFilesDir(null)` como carpeta propia de la app sin permisos runtime, en vez
-  de `Environment.getExternalStorageDirectory()`) — módulo IX
-- Comunicación cliente-servidor por Bluetooth clásico (`BluetoothSocket`, flujos de
-  entrada/salida sobre el socket RFCOMM) — módulo X
-- Comunicación cliente-servidor por BLE Android↔ESP32 (`BluetoothGatt`,
-  `BluetoothGattCallback`, servicios/características GATT identificados por UUID,
-  naturaleza asíncrona de la conexión BLE vs. el socket bloqueante del Bluetooth clásico) —
-  módulo XI
-- Comunicación por MQTT (patrón publicador-suscriptor) Android↔ESP32 (`MqttAsyncClient` de
-  Paho en Android, `PubSubClient` en Arduino; ambos son *clientes* de un mismo *broker* — a
-  diferencia de BLE, donde el ESP32 hacía de servidor directo del Android); diferencias de API
-  entre lados (Paho necesita URI completa `tcp://host:puerto`, PubSubClient recibe host y
-  puerto por separado); `mqttCliente.loop()` debe llamarse en cada vuelta del `loop()` de
-  Arduino sin bloqueos largos (`delay()`) antes, o se atrasan los mensajes entrantes — módulo
-  XIII
+(vacía a partir de MiCuadragesimaQuintaApp — el repaso de aquí en adelante se centraliza en
+`XIII. IV  + IoT + Android + ESP32 + Proyecto final/GUIA_ESTUDIO_PROYECTO_FINAL.md`, que cubre
+todo lo necesario para presentar el proyecto final, en vez de ir agregando conceptos sueltos
+aquí)
 
 ## Agentes/skills preferidos (plugin ECC)
 

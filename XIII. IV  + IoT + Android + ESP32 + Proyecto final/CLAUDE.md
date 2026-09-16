@@ -86,3 +86,50 @@ adaptándola:
 - Pendiente para cuando se pruebe con hardware real: reemplazar `ssid`/`password` (placeholder
   `"xxxxxx"`) en el `.ino`, y decidir un tópico propio (la guía deja `"topico"` por defecto,
   igual que el bug de tópico compartido que se vio en la Tercera).
+
+## `MiCuadragesimaQuintaApp/` — DHT11 + HC-SR04 por MQTT (TAREA del módulo 16)
+
+A diferencia de las dos anteriores (actividades con ejemplo resuelto en el docx), esta es la
+**tarea** del módulo 16 — el docx solo trae el enunciado (Figuras 12-16), sin código. La
+jerarquía de clases se sacó de la Figura 12 (imagen embebida del docx, no del texto): a
+diferencia del patrón `GaugeSimple`+subclase por sensor usado en el módulo XI y en
+MiCuadragesimaCuartaApp, aquí la guía solo lista **una clase `Gauge`** (sin
+`Distanciometro`/`Termometro`/etc.) y una `Tabla` (renombrada de `TablaSimple`).
+
+- **ESP32-S3 publica un solo JSON con 3 medidas**: `distancia` (HC-SR04, `trigPin=15`/
+  `echoPin=16`, mismos pines que `MiTrigesimaNovenaApp` del módulo XI), `temperatura` y
+  `humedad` (DHT11, `DATA` en GPIO 42). Un solo tópico, un solo mensaje por ciclo de muestreo
+  — no hace falta multiplicar clientes/tópicos.
+- **Corrección de la velocidad del sonido**: el enunciado pide explícitamente corregir la
+  velocidad del sonido con temperatura y humedad (no solo temperatura). Se usó la fórmula
+  empírica `v = 331.3 + 0.606*T + 0.0124*HR` (m/s) en vez de la constante fija `340` que tenía
+  `MiTrigesimaNovenaApp`. El DHT11 se lee *antes* de medir la distancia para tener T/HR
+  frescos en la fórmula; si una lectura puntual del DHT11 falla (`isnan`), se reutiliza el
+  último valor válido en vez de propagar `NaN` al cálculo.
+- **`Gauge.cambiarEscala(medida, umbrales[])` genérico**: en vez de 3 subclases con brackets
+  hardcodeados (como `Distanciometro`/`Luxometro` en el módulo XI), se agregó un solo método a
+  `Gauge` que recibe un arreglo de umbrales ascendentes y usa el primero que cubre la medida
+  actual como `maximo` del rango. Cada instancia (distancia/temperatura/humedad) le pasa su
+  propio arreglo — cumple "rango dinámico en los 3 gauges" sin triplicar lógica, y coincide
+  con que la Figura 12 solo muestra una clase `Gauge`.
+- **Cluster de 3 gauges superpuestos (Figuras 13-16 del docx)**: se logró con un `FrameLayout`
+  — el gauge grande de distancia llena todo el contenedor, y una fila horizontal
+  (`LinearLayout`) con los gauges pequeños de temperatura/humedad se pega encima con
+  `gravity = BOTTOM|CENTER_HORIZONTAL`, quedando visualmente montada sobre el borde inferior
+  del gauge grande (efecto "cluster" de instrumentos, sin necesidad de `RelativeLayout` con
+  márgenes negativos).
+- **Tabla y gráfica solo muestran distancia vs. tiempo** (así lo pide el enunciado
+  explícitamente) — temperatura y humedad son de solo lectura en vivo en su gauge, sin
+  historial ni tabulación.
+- **DHT11 solo admite ~1 lectura/segundo** (límite del sensor, no del código) — el período de
+  muestreo se dejó en 1000 ms, más lento que el de la Cuarta (500 ms), por esa razón.
+- Blink de verificación en GPIO 1 a **250 ms** (distinto de 1000 ms de la Tercera y 500 ms de
+  la Cuarta), mismo patrón no bloqueante con `millis()` ya usado en ambas.
+- **Compilación verificada** con `./gradlew assembleDebug` — se creó un PNG placeholder de
+  2×2 en `res/drawable/dht11_hcsr04_android.png` solo para que compilara (el `R.drawable`
+  necesita el archivo real presente); el usuario lo reemplaza por la imagen definitiva al
+  final, junto con el ícono personalizado que pide el enunciado para la entrega.
+- Pendiente para cuando se pruebe con hardware real: reemplazar `ssid`/`password`
+  (placeholder) en el `.ino`, reemplazar el drawable placeholder, y confirmar en terreno que
+  los brackets elegidos para temperatura (`10/20/30/40/50 °C`) y humedad (`20/40/60/80/100
+  %HR`) dan una escala legible con las condiciones reales del salón.

@@ -28,15 +28,15 @@ unsigned long tiempoAnteriorParpadeo = 0;
 bool estadoParpadeo = false;
 
 // --- Variables para conexiones WiFi ---
-const char* ssid = "Londonos_2.4";      //reemplazar SSID
-const char* password = "Juansimon2"; //reemplazar password
+const char* ssid = "Comunidad_UNMED";      //reemplazar SSID
+const char* password = "wifi_med_213"; //reemplazar password
 
 // --- Datos del Broker MQTT ---
 const char* mqtt_server = "45.56.74.248";
 const int mqttPort = 1883;
 const char* mqtt_usuario = "fisica";
 const char* mqtt_clave = "iotfisica";
-const char* topico = "s2";
+const char* topico = "s1027";
 
 WiFiClient espCliente;
 PubSubClient mqttCliente(espCliente);

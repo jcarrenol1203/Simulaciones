@@ -61,6 +61,13 @@ public class Luxometro extends GaugeSimple {
 
         }
 
+        if(medida>50000 && ((medida < 100000)^(medida==100000f ))){
+
+            maximo=100000f;
+            minimo=0f;
+
+        }
+
 
         this.setRango(minimo,maximo);
 
